@@ -1,0 +1,63 @@
+package ristinolla;
+
+import javafx.application.Application;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+
+public class RistinollaSovellus extends Application {
+
+    @Override
+    public void start(Stage ikkuna) {
+
+        Ristinolla ristinolla = new Ristinolla();
+
+        Font tasaleveys = Font.font("Monospaced", 40);
+        Label pelitilanne = new Label("Vuoro: " + ristinolla.vuoro());
+        pelitilanne.setFont(tasaleveys);
+        BorderPane asettelu = new BorderPane();
+        asettelu.setTop(pelitilanne);
+
+        GridPane ruudukko = new GridPane();
+        ruudukko.setHgap(10);
+        ruudukko.setVgap(10);
+        ruudukko.setPadding(new Insets(10, 10, 10, 10));
+        
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                Button nappi = new Button(ristinolla.tilanne(x, y));
+                nappi.setFont(tasaleveys);
+                ruudukko.add(nappi, x, y);
+
+                int rx = x;
+                int ry = y;
+
+                nappi.setOnAction((event) -> {
+                    ristinolla.aseta(rx, ry);
+                    nappi.setText(ristinolla.tilanne(rx, ry));
+                    pelitilanne.setText("Vuoro: " + ristinolla.vuoro());
+                    
+                    if (ristinolla.loppu()) {
+                        pelitilanne.setText("Loppu!");
+                    }
+                });
+            }
+        }
+
+        asettelu.setCenter(ruudukko);
+        Scene nakyma = new Scene(asettelu);
+        ikkuna.setScene(nakyma);
+        ikkuna.show();
+    }
+
+    public static void main(String[] args) {
+        launch(RistinollaSovellus.class);
+    }
+}
